@@ -1,0 +1,46 @@
+Static interface methods are not inherited in other interfaces or classes. So static interface methods cannot be abstract i.e they must be defined.
+
+-----------------------------------------------------------------------------
+
+Class static methods however are inherited in other classes. Static methods are never abstract in classes as well, because they exit independently of any objects of the class. So a method can never be both static and abstract.
+
+Also a method can never be both abstract and final.
+
+-----------------------------------------------------------------------------
+
+Static methods are not overriden (so they are final by default). So for example if a superclass and a subclass both define the same static method, they will be treated as separate methods of each class.
+
+-----------------------------------------------------------------------------
+
+The way to make a CONCRETE class non-instantiable is to define its constructor to be private:
+
+class A {
+	private A() {}
+
+	/*...
+	instance variables & methods
+	...*/
+}
+
+classic Example is the java.lang.System class.
+
+-----------------------------------------------------------------------------
+
+* Alternate way of refering to a static member(variable or method) of a class is to use an object reference variable (instead of the class name) of that class. This is especially useful for abstract classes.
+
+abstract class A {
+	static void show() {
+		System.out.println("hello");
+	}
+}
+
+class Main {
+	public static void main(String args[]) {
+		A ob = null; //ob needs to be initialized to be used
+		ob.show();
+	}
+}
+
+This is how System.in, System.out and System.err works
+
+-----------------------------------------------------------------------------
