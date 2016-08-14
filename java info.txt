@@ -44,3 +44,25 @@ class Main {
 This is how System.in, System.out and System.err works
 
 -----------------------------------------------------------------------------
+
+Rules of method overloading:
+*All the overloaded methods must have the same name.
+*The parameters of the methods must be different either in terms of number and/or type.
+*while the return types may differ, it doesn’t play a role in distinguishing an overloaded
+method from another. Also each overloaded method may or may not have their independent
+throws clause.
+
+Rules of method Overriding:
+*The overridden method and the overriding method must have the same signature(name and
+parameters).
+*The return type of the overriding method can be the same as the overridden method or a
+subclass of the return type of the overridden method for reference types. In case of primitive
+types it has to be the same for both.
+*In case the exception is a checked exception in the throws clause of the overridden method,
+any exception that is the same or a subclass of that exception is allowed in the throws clause
+of the overriding method.
+It is also valid to declare any of the unchecked exceptions in the throws clause of the
+overriding method or even omit the throws clause altogether. Its applicable to both checked
+and unchecked exceptions in the throws clause of the overridden method.
+
+-----------------------------------------------------------------------------
