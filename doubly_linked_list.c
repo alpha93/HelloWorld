@@ -1,18 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define ALLOCATE (node *)malloc(sizeof(node))
 
 typedef struct linked_list {
-	int d;
+	int data;
 	struct linked_list *next;
+	struct linked_list *prev;
 } node;
 
-node *head = NULL;
-node *tail = NULL; /* for the append() function, to get to the last element we have to traverse
-					  the entire list which is very inefficient. So to gain access to the last element instantly, 
-					  the tail pointer keeps track of the last element */
-				   /* the delete_at_end() and delete_at_pos() functions counld also have been made efficient
-				      by keeping a pointer to the 2nd last element */
+node *head = NULL, *tail = NULL;
 int count = 0;
 
 void add(int);
@@ -23,16 +18,16 @@ void del_at_end();
 void del_at_pos(int);
 void display();
 void reverse(node *);
-void find_mid(node *);	// FusionCharts interview question
-void bubble_sort();
+void find_mid(node *);
+void insertion_sort();
 
-int main() {	
+int main() {
 	int choice, x, pos;
 
 	do {
 		printf("\n 1. Add at begining \n 2. Add at end \n 3. Insert at position \n");
 		printf(" 4. Delete at begining \n 5. Delete at end \n 6. Delete at position \n 7. Display the list \n");
-		printf(" 8. Show number of elements \n 9. Reverse list \n10. Sort the list \n11. Exit \n");
+		printf(" 8. Show number of elements \n 9. Reverse list \n10. sort the list \n11. Exit\n");
 		printf("\nEnter your choice: ");
 		scanf("%i", &choice); 
 
@@ -82,30 +77,33 @@ int main() {
 				display();
 				break;
 			case 10:
-				bubble_sort();
+				insertion_sort();
 				display();
 				break;
 			case 11:
-				printf("\nExit successful...");
+				printf("\nExit successful...\n");
 				exit(0);
 			default:
-				printf("\nSomething's gotta be wrong...  :-(");
+				printf("Something's gotta be wrong...  :-(  \n");
 				exit(1);
 		}
 	} while(1);
 }
 
 void add(int x) {
-	node *n = ALLOCATE;
-	n->d = x;
+	node *n = (node *)malloc(sizeof(node));
+	n->data = x;
+	n->prev = NULL;
 	count++;
 
 	if(head == NULL) {
 		n->next = NULL;
 		tail = n;
 	}
-    else
+	else {
 		n->next = head;
+		head->prev = n;
+	}
 
 	head = n;
 }
@@ -116,18 +114,13 @@ void append(int x) {
 		return;
 	}
 
-	node *n = ALLOCATE;
-	n->d = x;
+	node *n = (node *)malloc(sizeof(node));
+	n->data = x;
 	n->next = NULL;
+	n->prev = tail;
 	tail->next = n;
 	tail = n;
 	count++;
-
-	/*node *tmp = head;	
-	while(tmp->next != NULL) {
-		tmp = tmp->next;		//we had use this costly traversal if the tail pointer wasn't used
-	}
-	tmp->next = n;*/
 }
 
 void insert(int pos, int x) {
@@ -142,31 +135,32 @@ void insert(int pos, int x) {
 		return;
 	}
 
-	node *n = ALLOCATE;
-	n->d = x;
+	node *n = (node *)malloc(sizeof(node));
+	n->data = x;
 	count++;
 
-	node *tmp = head;
+	node *tmp = head, *tmp_next;
 
 	while((pos-- -2) != 0) {
 		tmp = tmp->next;
 	}
 
-	node *tmp1 = tmp->next;
+	tmp_next = tmp->next;
 	tmp->next = n;
-	n->next = tmp1;
-
+	n->prev = tmp;
+	n->next = tmp_next;
+	tmp_next->prev = n;
 }
 
 void del_at_beg() {
 	if(head == NULL) {
-		printf("\nOperation unsuccessful...List is already empty...");
+		printf("\nOperation unsuccessful...list is already empty...");
 		return;
 	}
 
-	node *h = head;
-	head = head->next;
-	free(h);
+	node *h = head->next;
+	free(head);
+	head = h;
 	count--;
 
 	if(head == NULL)
@@ -175,23 +169,17 @@ void del_at_beg() {
 
 void del_at_end() {
 	if(head == NULL) {
-		printf("\nOperation unsuccessful...List is already empty...");
+		printf("\nOperation unsuccessful...list is already empty...");
 		return;
 	} else if(head->next == NULL) {
 		del_at_beg();
 		return;
-	}	
-
-	node *tmp = head, *tmp1;
-	
-	while(tmp->next != NULL) {
-		tmp1 = tmp;
-		tmp = tmp->next;
 	}
-	
-	free(tmp);
-	tail = tmp1;
-	tmp1->next = NULL;
+
+	node *t = tail;
+	tail->prev->next = NULL;
+	tail = tail->prev;
+	free(t);
 	count--;
 }
 
@@ -202,22 +190,22 @@ void del_at_pos(int pos) {
 	} else if(pos == count) {
 		del_at_end();
 		return;
-	}else if(pos > count) {
+	} else if(pos > count) {
 		printf("\nOperation unsuccessful...invalid position...");
 		return;
-	} //printf("\npos: %i, nodes: %i", pos, count_nodes());
+	}
 
-	node *tmp = head, *tmp1, *tmp2;
+	node *tmp = head, *tmp_prev, *tmp_next;
 
 	while((pos-- -1) != 0) {
-		tmp1 = tmp;
 		tmp = tmp->next;
 	}
 
-	tmp2 = tmp->next;
-
+	tmp_prev = tmp->prev;
+	tmp_next = tmp->next;
 	free(tmp);
-	tmp1->next = tmp2;
+	tmp_prev->next = tmp_next;
+	tmp_next->prev = tmp_prev;
 	count--;
 }
 
@@ -231,27 +219,27 @@ void display() {
 
 	puts("");
 	while(tmp != NULL) {
-		printf("[%i] -> ", tmp->d);
+		printf("[%i] <-> ", tmp->data);
+		//printf("[%p [%i] %p] <-> ", tmp->prev, tmp->data, tmp->next);
 		tmp = tmp->next;
 	}
 	puts("");
 }
 
-void reverse(node *h) {		// it works by reversing the links, the data remains where they are
-	if(h->next->next == NULL) {
-		tail = head;
-		head = h->next;
-		h->next->next = h;
-		return;
+void reverse(node *h) {
+	while(h != NULL) {
+		node *tmp = h->prev;
+		h->prev = h->next;
+		h->next = tmp;
+		h = h->prev;
 	}
 
-	reverse(h->next);
-
-	h->next->next = h;
-	h->next = NULL;
+	node *tmp = head;
+	head = tail;
+	tail = tmp;
 }
 
-/* function to print the middle element(can be used find elements at position) without knowing the number of elements 
+/* function to print the middle element without knowing the number of elements 
    in one sweep: FusionCharts interview question */
 
 void find_mid(node *tmp) {
@@ -270,31 +258,24 @@ void find_mid(node *tmp) {
 
 	x--;
 	if(x == counter/2+1)
-		printf("\nvalue: %i\n", tmp->d);
-}
+		printf("\nvalue: %i\n", tmp->data);
+}	
 
-void bubble_sort() {
-	node *a, *b;;
-	int i, j;
+void insertion_sort() {
+	node *a = head->next, *b;
+	int i;
 
-	for(i=0; i<count-1; i++) {
-		int flag = 0;
-		a = head;
-		b = head->next;
+	for(i=1; i<count; i++) {
+		b = a;
+		
+		while(b->prev != NULL  &&  b->data < b->prev->data) {
+			b->data = b->data ^ b->prev->data;
+			b->prev->data = b->data ^ b->prev->data;
+			b->data = b->data ^ b->prev->data;
 
-		for(j=0; j<count-i-1; j++) {
-			if(a->d > b->d) {
-				a->d = a->d ^ b->d;
-				b->d = a->d ^ b->d;
-				a->d = a->d ^ b->d;
-				flag = 1;
-			}
+			b = b->prev; 
+		} 
 
-			a = a->next;
-			b = b->next;
-		}
-
-		if(!flag)
-			break;
+		a = a->next;
 	}
 }
