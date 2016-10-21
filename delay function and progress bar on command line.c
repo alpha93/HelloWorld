@@ -18,7 +18,12 @@ int main() {
 		for(j=0; j<80-i; j++)
 			printf(" ");
 
-		printf("\b");
+		if((i+1)%3 == 1)
+			printf("| ");
+		else if((i+1)%3 == 2)
+			printf("/ ");
+		else if((i+1)%3 == 0)
+			printf("\\ ");
 
 		printf("%d%%", (i+1)*2);
 		printf("\r");
