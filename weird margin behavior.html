@@ -2,6 +2,8 @@
 margins are calculated from elements that are at the same depth. If there is no other element at the same depth as the element in question, CSS kind of jumps outward in nesting until it finds an element at the same nesting level and applies the margin to that element. so that and all the inner elements are affected by it.
 
 In the example below there are three nested divs viz. #one, #two and #three. If margin is applied to #three(the inner most div), instaed of just it being pushed from div #two, all the three divs are pushed from the <body> tag. But if the div #four is uncommented and the margin property of div #three is commented, i.e if the margin is applied to div # four, only it is pushed(it overflows out of div #two but that's irrelevent here) from div #three, which is at the same nested level.
+
+stackoverflow link regarding this: http://stackoverflow.com/questions/1762539/margin-on-child-element-moves-parent-element
 -->
 <!DOCTYPE html>
 <html>
@@ -50,5 +52,7 @@ In the example below there are three nested divs viz. #one, #two and #three. If 
                 <!--div id="four"></div-->
             </div>
         </div>
+        
+        <div style="font-size: 20px;">stackoverflow link regarding this problem: <a href="http://stackoverflow.com/questions/1762539/margin-on-child-element-moves-parent-element">http://stackoverflow.com/questions/1762539/margin-on-child-element-moves-parent-element</a></div>
     </body>
 </html>
