@@ -1,0 +1,6 @@
+line-height - percentage values of line-height are calculated on the font-size.
+height/width - percentage values of height/width are calculated on the height/width of the containing element.
+padding/margin - percentage values of padding/margin are calculated on the width of the containing element.
+left/right - percentage values of left/right are calculated on the width of the containing element.
+top/bottom - percentage values of top/bottom are calculated on the height of the containing element.
+transform: translate(x%, y%) - percentage values for translate() are calculated on the element's height/width itself.
