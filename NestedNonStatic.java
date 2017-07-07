@@ -18,7 +18,7 @@ class Outer {
 
 class Main{
 	public static void main(String[] args) {
-		Outer.Inner ob = new Outer().new Inner();
+		Outer.Inner ob = new Outer().new Inner();    // since the inner class is a non-static member of the outer class, we must instantiate the inner class through an object of the outer class.
 		ob.show();
 	}
 }
