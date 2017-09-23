@@ -47,7 +47,7 @@ This is how System.in, System.out and System.err works
 
 Rules of method overloading:
 *All the overloaded methods must have the same name.
-*The parameters of the methods must be different either in terms of number and/or type.
+*The parameters of the methods must be different either in terms of number and/or type and/or order.
 *while the return types may differ, it doesn’t play a role in distinguishing an overloaded
 method from another. Also each overloaded method may or may not have their independent
 throws clause.
